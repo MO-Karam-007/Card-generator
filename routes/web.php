@@ -16,7 +16,13 @@ use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'welcome');
 
-Route::view('/contact', 'contact');
+Route::get('contact', function () {
+    // Fetch soft-deleted items
+    $deletedJobs = Job::onlyTrashed()->get();
+
+    // Pass the deleted items to the view
+    return view('contact', ['deletedJobs' => $deletedJobs]);
+});
 
 
 // Route::post('jobs', [JobController::class, 'store']);

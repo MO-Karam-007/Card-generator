@@ -1,6 +1,13 @@
 <x-layout>
     <x-slot:header>
-        Contact Page
+        Deleted Jobs
     </x-slot:header>
-    <h1>This is my Contact page</h1>
-</x-layout>
+    @if($deletedJobs->isEmpty())
+    <p>No deleted jobs found.</p>
+@else
+    <ul>
+        @foreach($deletedJobs as $job)
+            <li>{{ $job->job }} - {{ $job->salary }}</li>
+        @endforeach
+    </ul>
+@endif</x-layout>

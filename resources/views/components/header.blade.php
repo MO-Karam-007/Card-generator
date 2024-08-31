@@ -18,7 +18,7 @@
                     </li>
                     <li>
                         <x-nav href="/contact"
-                            :active="request()->is('contact')">Contact</x-nav>
+                            :active="request()->is('contact')">Deleted Items</x-nav>
                     </li>
                 </ul>
             </div>

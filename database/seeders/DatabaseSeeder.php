@@ -21,6 +21,8 @@ class DatabaseSeeder extends Seeder
             'email' => 'test@example.com',
         ]);
 
-        Job::factory(20)->create();
+        Job::factory(20)->create([
+            'image' => 'images/1725107528.jpg'
+        ]);
     }
 }

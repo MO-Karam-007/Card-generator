@@ -6,7 +6,7 @@
     </x-slot:header>
     {{-- <h1> {{ $job['job'] }} career</h1> --}}
     {{-- <h1>Starts with {{ $job['salary'] }}</h1> --}}
-    <form method="POST" action="/jobs" enctype="multipart/form-data">
+    <form method="post" action="/jobs" enctype="multipart/form-data">
         @csrf
 
         <div class="space-y-12">
@@ -20,17 +20,17 @@
                         <x-form-label for='job'>Title</x-form-label>
                         <div class="mt-2">
                            
-                            <x-form-input placeholder="CEO"  type="text" name="job" id="job" />
+                            <x-form-input placeholder="Spider-Man"  type="text" name="job" id="job" />
                            
                             <x-form-error name='job' />
                         </div>
                     </div>
 
                     <div class="sm:col-span-4">
-                        <x-form-label for='salary'>Salary</x-form-label>
+                        <x-form-label for='salary'>Power</x-form-label>
 
                         <div class="mt-2">
-                            <x-form-input placeholder="50,000 USD"  type="text" name="salary" id="salary" />
+                            <x-form-input placeholder="800"  type="text" name="salary" id="salary" />
 
                             <x-form-error name='salary' />
                           

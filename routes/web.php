@@ -19,7 +19,11 @@ Route::view('/', 'welcome');
 Route::view('/contact', 'contact');
 
 
+// Route::post('jobs', [JobController::class, 'store']);
 Route::resource('jobs', JobController::class, []);
+Route::post('jobs', [JobController::class, 'search']);
+Route::post('jobs/restore/{id}', [JobController::class, 'restore'])->name('jobs.restore');
+
 
 Route::get('/register', [RegisterController::class, 'index']);
 Route::post('/register', [RegisterController::class, 'store']);

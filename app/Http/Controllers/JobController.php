@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Job;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+
 use Illuminate\Support\Facades\Auth;
 
 class JobController extends Controller
@@ -11,7 +13,11 @@ class JobController extends Controller
     public function index()
     {
         $jobs = Job::with('employer')->latest()->paginate(9);
-        return view('jobs.index', ['jobs' => $jobs]);
+        $deletedJobs = Job::onlyTrashed()->get();
+        return view(
+            'jobs.index',
+            compact('jobs', 'deletedJobs')
+        );
     }
 
     public function create()
@@ -31,13 +37,15 @@ class JobController extends Controller
         // $req = request()->all();
         // dd($req);
         // Validations::validate
+        dd('Here');
 
         $validateData = $request->validate([
             'job' => 'required|min:4',
             'salary' => 'required',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
-        $validateData['employer_id'] = 3;
+        $validateData['employer_id'] = Auth::id();
+
 
         if ($request->hasFile('image')) {
             $imageName = time() . '.' .  $request->image->extension();
@@ -45,33 +53,91 @@ class JobController extends Controller
             $validateData['image'] = 'images/' . $imageName;
         }
         // dd($validateData);
+        // $validateData['employer_id'] = Auth::login();
         Job::create($validateData);
+
         return redirect('/jobs')->with('success', 'Item created successfully.');
     }
 
     // Destroy
     public function destroy(Job $job)
     {
+        if ($job->employer_id !== Auth::id()) {
+            abort(403, 'Unauthorized action.');
+        }
+
         $job->delete();
+
+        if ($job->image) {
+            Storage::delete('public/' . $job->image);
+        }
+
         return redirect('/jobs');
     }
 
     // Update
-    public function update(Job $job)
+    public function update(Job $job, Request $request)
     {
 
-        $data = [
-            'job' => request('job'),
-            'salary' => request('salary')
-        ];
+        if ($job->employer_id !== Auth::id()) {
+            abort(403, 'Unauthorized action.');
+        }
 
-        $job->update($data);
-        return redirect('/jobs');
+
+        // Validate the request
+        $validateData = $request->validate([
+            'job' => 'required|string|min:3',
+            'salary' => 'required',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ]);
+
+        // Check if an image file is uploaded
+        if ($request->hasFile('image')) {
+            // Delete the old image if it exists
+            if ($job->image) {
+                Storage::delete('public/' . $job->image);
+            }
+            // Store the new image
+            $imageName = time() . '.' . $request->image->extension();
+            $request->image->storeAs('public/images', $imageName);
+            $validateData['image'] = 'images/' . $imageName;
+        }
+
+        // Update the job with validated data
+        $job->update($validateData);
+
+        return redirect('/jobs')->with('success', 'Job updated successfully.');
     }
 
     // Edit page contant
     public function edit(Job $job)
     {
         return view('jobs.edit', ['job' => $job]);
+    }
+
+    public function search(Request $request)
+    {
+        $query = $request->input('query');
+        $jobs = Job::where('job', 'LIKE', '%' . $query . '%')->orWhere('salary', 'like', "%{$query}%")->with('employer')->latest()->paginate(9);
+        // dd($jobs);
+        return view('jobs.index', ['jobs' => $jobs]);
+    }
+
+    public function restore($id)
+    {
+
+        $job = Job::onlyTrashed()->findOrFail($id);
+
+        if ($job->employer_id !== Auth::id()) {
+            abort(403, 'Unauthorized action.');
+        }
+
+
+        if ($job) {
+            $job->restore();
+            return redirect('/jobs')->with('success', 'Job restored successfully.');
+        }
+
+        return redirect('/jobs')->with('error', 'Job not found.');
     }
 }

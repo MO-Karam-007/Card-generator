@@ -14,7 +14,7 @@
                     </li>
                     <li>
                         <x-nav href="/jobs"
-                            :active="request()->is('jobs')">Jobs</x-nav>
+                            :active="request()->is('jobs')">Cards</x-nav>
                     </li>
                     <li>
                         <x-nav href="/contact"

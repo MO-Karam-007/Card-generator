@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\FeaturesController;
 use App\Http\Controllers\JobController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\SessionController;
@@ -26,9 +27,10 @@ Route::get('contact', function () {
 
 
 // Route::post('jobs', [JobController::class, 'store']);
-Route::resource('jobs', JobController::class, []);
-Route::post('jobs', [JobController::class, 'search']);
-Route::post('jobs/restore/{id}', [JobController::class, 'restore'])->name('jobs.restore');
+Route::resource('jobs', JobController::class, [])->middleware('auth');
+
+Route::post('jobs', [FeaturesController::class, 'search']);
+Route::post('jobs/restore/{id}', [FeaturesController::class, 'restore']);
 
 
 Route::get('/register', [RegisterController::class, 'index']);

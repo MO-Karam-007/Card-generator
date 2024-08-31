@@ -1,12 +1,12 @@
 <x-layout>
     <x-slot:header>
-        Create a New Job
+        Create a New Card
         <p class="mt-1 text-sm leading-6 text-gray-600">We just need a handful of details from you.</p>
 
     </x-slot:header>
     {{-- <h1> {{ $job['job'] }} career</h1> --}}
     {{-- <h1>Starts with {{ $job['salary'] }}</h1> --}}
-    <form method="post" action="/jobs" enctype="multipart/form-data">
+    <form method="POST" action="/jobs" enctype="multipart/form-data">
         @csrf
 
         <div class="space-y-12">
@@ -60,8 +60,8 @@
                     Cancel
                 </a>
                 <button type="submit"
-                    class="rounded-md bg-indigo-600 px-3 py-3 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Save</button>
-            </div>
+                class="rounded-md bg-indigo-600 px-3 py-3 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Save</button>
+        </div>
         </div>
     </form>
 
